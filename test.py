@@ -37,3 +37,5 @@ else:
     print("222")
 
 print("AAaa")
+
+print('小香猪')
