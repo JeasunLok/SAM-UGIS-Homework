@@ -29,3 +29,13 @@ vector = 'segment.gpkg'
 sam.tiff_to_gpkg(mask, vector, simplify_tolerance=None)
 print("pilllll!:")
 print('a')
+
+a = 1
+if a==1:
+    print("111")
+else: 
+    print("222")
+
+print("AAaa")
+
+print('小香猪')
