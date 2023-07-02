@@ -28,6 +28,6 @@ def download_satellite_image(img_path, bbox, zoom, source="Satellite", return_im
     tif_propcessing.geoCoordSys(path, GeoTransform, WKT_3857)
     
 if __name__ == "__main__":
-    path = r"images/test.tif"
-    bbox = [-95.3704, 29.6762, -95.368, 29.6775]
+    path = r"images/download/test.tif"
+    bbox = [-95.3704, 29.6762, -95.366, 29.6795]
     download_satellite_image(path, bbox, 20)
