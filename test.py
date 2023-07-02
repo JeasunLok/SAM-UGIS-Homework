@@ -27,3 +27,5 @@ sam.generate(image, mask)
 
 vector = 'segment.gpkg'
 sam.tiff_to_gpkg(mask, vector, simplify_tolerance=None)
+
+print("abcdefg")
