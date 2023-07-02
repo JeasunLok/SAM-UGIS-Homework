@@ -10,7 +10,7 @@ image = 'satellite.tif'
 
 out_dir = os.path.join(os.path.expanduser('~'), 'Downloads')
 # checkpoint = os.path.join(out_dir, 'src\sam_vit_b_01ec64.pth')
-checkpoint = r'src\sam_vit_b_01ec64.pth'
+checkpoint = r'asset\sam_vit_b_01ec64.pth'
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 sam = SamGeo(
