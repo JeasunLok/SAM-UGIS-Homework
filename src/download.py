@@ -1,13 +1,12 @@
 from samgeo import tms_to_geotiff
 from osgeo import gdal,osr
-
-# 
+# 导入上级目录的模块
 import os
 dir_path = os.path.dirname(os.path.realpath(__file__)) # 获取当前目录
 parent_dir_path = os.path.abspath(os.path.join(dir_path, os.pardir)) # 获取上级目录
 import sys
 sys.path.append(parent_dir_path) # 添加上级目录
-from utils import tif_propcessing
+from utils import tif_processing
 
 def download_satellite_image(img_path, bbox, zoom, source="Satellite", return_image=False):
     # 调用API下载EPSG:3857的google影像
@@ -25,7 +24,7 @@ def download_satellite_image(img_path, bbox, zoom, source="Satellite", return_im
     # 进行投影
     img = gdal.Open(path)
     GeoTransform = img.GetGeoTransform()
-    tif_propcessing.geoCoordSys(path, GeoTransform, WKT_3857)
+    tif_processing.geoCoordSys(path, GeoTransform, WKT_3857)
     
 if __name__ == "__main__":
     path = r"images/download/test.tif"
