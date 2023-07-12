@@ -2,7 +2,13 @@
 from tkinter import *
 from tkinter import messagebox
 from tkinter.filedialog import askopenfilename,asksaveasfilename
-from  PIL  import  Image,ImageTk
+from PIL import Image,ImageTk
+import os
+os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
+
+from src.sam_segmentation import sam_segmentation
+from src.econ_segmentation import econ_segmentation
+from src.classification import main_classification
 
 class Application(Frame):
     """一个经典的GUI程序的类的写法"""
@@ -13,8 +19,21 @@ class Application(Frame):
         self.image_path = StringVar()
         self.samples_path = StringVar()
         self.segmentation_path = StringVar()
+        # 待做的 分割算法选择
+        self.segmentation_method = StringVar()
+        self.segmentation_method.set("SAM")
+        #
         self.classification_path = StringVar()
         self.classification_method = StringVar()
+
+        # 待做的：这两个分割参数 和 一个划分训练集和测试集的参数 和 精度
+        self.econ_seg_kernel_size = StringVar()
+        self.econ_seg_max_dist = StringVar()
+        self.train_radio = StringVar()
+        self.train_radio.set("0.6")
+        self.accuracy_OA = StringVar()
+        self.accuracy_Kappa = StringVar()
+
         self.gpu_selection = StringVar()
         self.createWidget()
         
@@ -96,6 +115,33 @@ class Application(Frame):
         self.classification_file_button.place(x=665,y=185)
 
         #--------- 模型运算设置的相关组件 ---------#
+
+
+        ## 这里待做 分割算法选择 还有参数 选择多尺度分割需要有两个输入文本框输入两个参数1.核大小 2.最大距离
+        self.segmentation_method_selection_label = Label(root, text='选择分割算法：',font=('楷体', 15),
+                                                           padx=10,pady=10)
+        self.segmentation_method_selection_label.place(x=0, y=240)
+
+        # SAM_btn=Radiobutton(root, text="SAM分割", variable=self.classification_method, value="SAM",
+        #                    cursor='hand2',font=('黑体',12),foreground='#000000')
+        # SAM_btn.bind('<Button-1>',radioSelected1) # Button-1是鼠标左键点击事件
+        # SAM_btn.pack()
+        # SAM_btn.place(x=190,y=253)
+
+        # ECON_btn=Radiobutton(root, text="多尺度分割", variable=self.classification_method, value="ECON",
+        #                     cursor='hand2',font=('黑体',12),foreground='#717171')
+        # ECON_btn.bind('<Button-1>',radioSelected2) 
+        # ECON_btn.pack()
+        # ECON_btn.place(x=290,y=253)
+
+        # 两个参数
+        # self.econ_seg_kernel_size = StringVar()
+        # self.econ_seg_max_dist = StringVar()
+
+        ## 这里待做，弄一个文本框输入分类时训练集合测试集的划分
+        # self.train_radio = StringVar()
+        ## 
+
         self.classification_method_selection_label = Label(root, text='选择分类算法：',font=('楷体', 15),
                                                            padx=10,pady=10)
         self.classification_method_selection_label.place(x=0, y=240)
@@ -283,6 +329,11 @@ class Application(Frame):
             messagebox.showinfo('错误','未指定输出分割文件')
         else:
             messagebox.showinfo("分割","开始分割")
+            if self.segmentation_method.get() == "SAM":
+                sam_segmentation(self.image_path.get(), self.segmentation_path.get(), self.gpu_selection.get())
+            elif self.segmentation_method.get() == "ECON":
+                econ_segmentation(self.image_path.get(), self.segmentation_path.get(), self.econ_seg_kernel_size.get(), self.econ_seg_max_dist.get())
+            messagebox.showinfo("分割","分割完成")
 
     def classification(self):
         if self.samples_path.get()=='':
@@ -291,6 +342,11 @@ class Application(Frame):
             messagebox.showinfo('错误','未指定输出分类文件')
         else:
             messagebox.showinfo("分类","开始分类")
+            accuracy = main_classification(self.image_path.get(), self.segmentation_path.get(), self.samples_path.get(), self.classification_path.get(), float(self.train_radio.get()), self.classification_method.get())
+            self.accuracy_OA.set(accuracy["OA"])
+            self.accuracy_Kappa.set(accuracy["kappa"])
+            messagebox.showinfo("分类","分类完成")
+            
     
     def image_load(self):
         filename = askopenfilename(filetypes=[("tif图像文件", "*.tif")])
@@ -298,11 +354,11 @@ class Application(Frame):
 
     def segmentation_load(self):
         # 选择输出文件的路径并命名,filetypes参数后续可以根据具体情况更改
-        filename = asksaveasfilename(defaultextension='.tif',filetypes=[('tif图像文件', '*.txt'), ('All Files', '*.*')]) 
+        filename = asksaveasfilename(defaultextension='.tif',filetypes=[('tif图像文件', '*.tif'), ('All Files', '*.*')]) 
         self.segmentation_path.set(filename)
 
     def samples_load(self):
-        filename = askopenfilename(filetypes=[("tif图像文件", "*.tif")])
+        filename = askopenfilename(filetypes=[("shp矢量文件", "*.shp")])
         self.samples_path.set(filename)
 
     def classification_load(self):
@@ -311,10 +367,9 @@ class Application(Frame):
 
 root=Tk()
 root.geometry("810x450")
-root.title("一个经典的GUI程序类的测试")
+root.title("SAM与多尺度分割卫星图像分割与分类开发版本")
 root.resizable(False, False)
 app = Application(master=root)
-
 
 # 进度条
 # bar = Progressbar(root, length=200, maximum=100, value=30)
