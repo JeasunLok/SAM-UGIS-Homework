@@ -1,1 +1,0 @@
-print('This is a module for GUI window')
