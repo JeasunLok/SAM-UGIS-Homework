@@ -1,4 +1,3 @@
-import samgeo
 import torch
 from samgeo import SamGeo
 
