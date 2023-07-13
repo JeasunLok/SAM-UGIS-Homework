@@ -6,11 +6,21 @@ from PIL import Image,ImageTk
 import os
 from tkinter import ttk
 import time
+import threading
+import numpy as np
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
-# from src.sam_segmentation import sam_segmentation
-# from src.econ_segmentation import econ_segmentation
-# from src.classification import main_classification
+from src.sam_segmentation import sam_segmentation
+from src.econ_segmentation import econ_segmentation
+from src.classification import main_classification
+
+def thread_it(func, *args):
+    # 创建线程
+    t = threading.Thread(target=func, args=args) 
+    # 守护线程
+    t.setDaemon(True) 
+    # 启动线程
+    t.start()
 
 class Application(Frame):
     """一个经典的GUI程序的类的写法"""
@@ -20,21 +30,12 @@ class Application(Frame):
         self.pack()
         self.image_path = StringVar()
         self.samples_path = StringVar()
+
         self.segmentation_path = StringVar()
-        # 待做的 分割算法选择
         self.segmentation_method = StringVar()
-        self.segmentation_method.set("SAM")
-        #
+
         self.classification_path = StringVar()
         self.classification_method = StringVar()
-
-        # 待做的：这两个分割参数 和 一个划分训练集和测试集的参数 和 精度
-        self.econ_seg_kernel_size = StringVar()
-        self.econ_seg_max_dist = StringVar()
-        self.train_radio = StringVar()
-        self.train_radio.set("0.6")
-        self.accuracy_OA = StringVar()
-        self.accuracy_Kappa = StringVar()
 
         self.gpu_selection = StringVar()
         self.createWidget()
@@ -251,7 +252,9 @@ class Application(Frame):
 
         # 显示分类精度
         self.accuracy_OA = StringVar()
+        self.accuracy_OA.set("0")
         self.accuracy_Kappa = StringVar()
+        self.accuracy_Kappa.set("0")
 
         Accuracy_frame=Frame(root,height=10,width=100,relief='groove',bd=2,padx=5,pady=5)
         Accuracy_frame.pack()
@@ -269,13 +272,15 @@ class Application(Frame):
 
 
         #--------- 软件运算执行的相关组件 ---------#  
-        self.segmentation_button = Button(root,text='分割',cursor='hand2',relief='raised',command=self.segmentation,
-                                        width=8,bg='#ECECEC',font=('华文彩云',12),activebackground='#D9D9D9')
+        # self.segmentation_button = Button(root,text='分割',cursor='hand2',relief='raised',command=self.segmentation,
+        #                                 width=8,bg='#ECECEC',font=('华文彩云',12),activebackground='#D9D9D9')
+        self.segmentation_button = Button(root,text='分割',cursor='hand2',relief='raised',command=lambda:thread_it(self.segmentation),
+                                width=8,bg='#ECECEC',font=('华文彩云',12),activebackground='#D9D9D9')
         self.segmentation_button.pack()
         self.segmentation_button.place(x=10,y=430)
 
 
-        self.classification_button = Button(root,text='分类',cursor='hand2',relief='raised',command=self.classification,
+        self.classification_button = Button(root,text='分类',cursor='hand2',relief='raised',command=lambda:thread_it(self.classification),
                                         width=8,bg='#ECECEC',font=('华文彩云',12),activebackground='#D9D9D9')
         self.classification_button.pack()
         self.classification_button.place(x=150,y=430)
@@ -291,13 +296,6 @@ class Application(Frame):
                                         width=8,bg='#ECECEC',font=('华文彩云',12),activebackground='#D9D9D9')
         self.showImage_button.pack()
         self.showImage_button.place(x=290,y=430)
-
-        
-        # bar.pack(padx=10,pady=20)
-        # bar.start()
-        # bar.stop()
-        # BarRoot.destroy()
-
 
     # 缩放图片的尺寸    
     def resizeImage(self,Image_original):
@@ -326,6 +324,9 @@ class Application(Frame):
                 messagebox.showinfo('错误','无分割结果')
                 return
             MyImage=Image.open(filename)
+            MyImage_array=np.array(MyImage)
+            MyImage_array=np.floor(np.array(MyImage_array)/np.max(MyImage_array)*255)
+            MyImage=Image.fromarray(MyImage_array)
             self.Image_btn1['relief']='raised'
             self.Image_btn2['relief']='sunken'
             self.Image_btn4['relief']='raised'
@@ -335,6 +336,9 @@ class Application(Frame):
                 messagebox.showinfo('错误','无分类结果')
                 return
             MyImage=Image.open(filename)
+            MyImage_array=np.array(MyImage)
+            MyImage_array=np.floor(np.array(MyImage_array)/np.max(MyImage_array)*255)
+            MyImage=Image.fromarray(MyImage_array)
             self.Image_btn1['relief']='raised'
             self.Image_btn2['relief']='raised'
             self.Image_btn4['relief']='sunken'
@@ -412,11 +416,11 @@ class Application(Frame):
                     return
             messagebox.showinfo("分割","开始分割")            
             self.startProgressbar() # 启动进度条
-            # if self.segmentation_method.get() == "SAM":
-            #     sam_segmentation(self.image_path.get(), self.segmentation_path.get(), self.gpu_selection.get())
-            # elif self.segmentation_method.get() == "ECON":
-            #     econ_segmentation(self.image_path.get(), self.segmentation_path.get(), self.econ_seg_kernel_size.get(), self.econ_seg_max_dist.get())
-            # TODO 在调用需要补充进度条停止的条件
+            print(self.segmentation_method.get()+" segmentation")
+            if self.segmentation_method.get() == "SAM":
+                sam_segmentation(self.image_path.get(), self.segmentation_path.get(), self.gpu_selection.get())
+            elif self.segmentation_method.get() == "ECON":
+                econ_segmentation(self.image_path.get(), self.segmentation_path.get(), float(self.econ_seg_kernel_size.get()), float(self.econ_seg_max_dist.get()))
             self.stopProgreebar()   # 停止进度条
             messagebox.showinfo("分割","分割完成")
 
@@ -433,14 +437,13 @@ class Application(Frame):
                 return
             messagebox.showinfo("分类","开始分类")
             self.startProgressbar() # 启动进度条
-            # accuracy = main_classification(self.image_path.get(), self.segmentation_path.get(), self.samples_path.get(), self.classification_path.get(), float(self.train_radio.get()), self.classification_method.get())
-            # self.accuracy_OA.set(accuracy["OA"])
-            # self.accuracy_Kappa.set(accuracy["kappa"])
-            # TODO 在调用需要补充进度条停止的条件
+            print(self.classification_method.get()+" segmentation")
+            accuracy = main_classification(self.image_path.get(), self.segmentation_path.get(), self.samples_path.get(), self.classification_path.get(), float(self.train_ratio.get()), self.classification_method.get())
+            self.accuracy_OA.set(str(round(accuracy["OA"], 2)))
+            self.accuracy_Kappa.set(str(round(accuracy["kappa"], 3)))
             self.stopProgreebar()   # 停止进度条
             messagebox.showinfo("分类","分类完成")
             
-    
     def image_load(self):
         filename = askopenfilename(filetypes=[("tif图像文件", "*.tif")])
         self.image_path.set(filename)
@@ -467,6 +470,4 @@ root.geometry(root_size)  # 让窗口居中显示
 root.title("SAM与多尺度分割卫星图像分割与分类开发版本")
 root.resizable(False, False)
 app = Application(master=root)
-
 root.mainloop()
-print(app.image_path.get())
