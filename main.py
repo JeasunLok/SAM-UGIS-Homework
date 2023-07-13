@@ -4,11 +4,13 @@ from tkinter import messagebox
 from tkinter.filedialog import askopenfilename,asksaveasfilename
 from PIL import Image,ImageTk
 import os
+from tkinter import ttk
+import time
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
-from src.sam_segmentation import sam_segmentation
-from src.econ_segmentation import econ_segmentation
-from src.classification import main_classification
+# from src.sam_segmentation import sam_segmentation
+# from src.econ_segmentation import econ_segmentation
+# from src.classification import main_classification
 
 class Application(Frame):
     """一个经典的GUI程序的类的写法"""
@@ -115,41 +117,7 @@ class Application(Frame):
         self.classification_file_button.place(x=665,y=185)
 
         #--------- 模型运算设置的相关组件 ---------#
-
-
-        ## 这里待做 分割算法选择 还有参数 选择多尺度分割需要有两个输入文本框输入两个参数1.核大小 2.最大距离
-        self.segmentation_method_selection_label = Label(root, text='选择分割算法：',font=('楷体', 15),
-                                                           padx=10,pady=10)
-        self.segmentation_method_selection_label.place(x=0, y=240)
-
-        # SAM_btn=Radiobutton(root, text="SAM分割", variable=self.classification_method, value="SAM",
-        #                    cursor='hand2',font=('黑体',12),foreground='#000000')
-        # SAM_btn.bind('<Button-1>',radioSelected1) # Button-1是鼠标左键点击事件
-        # SAM_btn.pack()
-        # SAM_btn.place(x=190,y=253)
-
-        # ECON_btn=Radiobutton(root, text="多尺度分割", variable=self.classification_method, value="ECON",
-        #                     cursor='hand2',font=('黑体',12),foreground='#717171')
-        # ECON_btn.bind('<Button-1>',radioSelected2) 
-        # ECON_btn.pack()
-        # ECON_btn.place(x=290,y=253)
-
-        # 两个参数
-        # self.econ_seg_kernel_size = StringVar()
-        # self.econ_seg_max_dist = StringVar()
-
-        ## 这里待做，弄一个文本框输入分类时训练集合测试集的划分
-        # self.train_radio = StringVar()
-        ## 
-
-        self.classification_method_selection_label = Label(root, text='选择分类算法：',font=('楷体', 15),
-                                                           padx=10,pady=10)
-        self.classification_method_selection_label.place(x=0, y=240)
-       
-        self.gpu_selection_label = Label(root, text='选择运算设备：', font=('楷体', 15),
-                                         padx=10,pady=10)
-        self.gpu_selection_label.place(x=0, y=300)
-      
+            
     #   选择算法或设备（激活Radio）后改变字体颜色，以突出已选的Radio
         def radioSelected1(e):
             DT_btn['foreground']='#000000'
@@ -163,68 +131,174 @@ class Application(Frame):
             DT_btn['foreground']='#717171'
             SVM_btn['foreground']='#717171'
             RF_btn['foreground']='#000000'
+        # 选中GPU
         def radioSelected4(e):
             GPU_btn['foreground']='#000000'
             CPU_btn['foreground']='#717171'
+        # 选中CPU
         def radioSelected5(e):
             GPU_btn['foreground']='#717171'
             CPU_btn['foreground']='#000000'
+        # 选中SAM分割
+        def radioSelected6(e):
+            SAM_btn['foreground']='#000000'
+            ECON_btn['foreground']='#717171'
+            self.Kernel_size_entry['state']='disabled'
+            self.Max_dist_entry['state']='disabled'
+            Kernel_size['foreground']='#717171'
+            Max_dist['foreground']='#717171'
+         # 选中ECON分割
+        def radioSelected7(e):
+            SAM_btn['foreground']='#717171'
+            ECON_btn['foreground']='#000000'
+            self.Kernel_size_entry['state']='normal'
+            self.Max_dist_entry['state']='normal'
+            Kernel_size['foreground']='#000000'
+            Max_dist['foreground']='#000000'
+
+   
+        ## 分割算法选择 还有参数 选择多尺度分割需要有两个输入文本框输入两个参数1.核大小 2.最大距离
+        self.segmentation_method_selection_label = Label(root, text='选择分割算法：',font=('楷体', 15),
+                                                           padx=10,pady=10)
+        self.segmentation_method_selection_label.pack()
+        self.segmentation_method_selection_label.place(x=0, y=240)
+
+        self.segmentation_method.set("SAM")
+        SAM_btn=Radiobutton(root, text="SAM分割", variable=self.segmentation_method, value="SAM",
+                           cursor='hand2',font=('黑体',12),foreground='#000000')
+        SAM_btn.bind('<Button-1>',radioSelected6) # Button-1是鼠标左键点击事件
+        SAM_btn.pack()
+        SAM_btn.place(x=190,y=253)
+
+        ECON_btn=Radiobutton(root, text="多尺度分割", variable=self.segmentation_method, value="ECON",
+                            cursor='hand2',font=('黑体',12),foreground='#717171')
+        ECON_btn.bind('<Button-1>',radioSelected7) 
+        ECON_btn.pack()
+        ECON_btn.place(x=290,y=253)
+
+        # ECON算法的两个参数
+        self.econ_seg_kernel_size = StringVar()
+        self.econ_seg_max_dist = StringVar()
+
+        ECON_para_frame=Frame(root,height=30,width=300,relief='groove',bd=2,padx=5,pady=5)
+        ECON_para_frame.pack()
+        ECON_para_frame.place(x=490,y=250)
+        Kernel_size=Label(ECON_para_frame, text='核大小:', font=('黑体',11),foreground='#717171')
+        Kernel_size.grid(row=0,column=0)
+        self.Kernel_size_entry = Entry(ECON_para_frame, textvariable=self.econ_seg_kernel_size, font=('Times New Roman', 11), 
+                                              relief='sunken',bd=1,width=6,state='disabled',justify='center')                            
+        self.Kernel_size_entry.grid(row=0,column=1)
+
+        Max_dist=Label(ECON_para_frame, text=' 最大距离:', font=('黑体',11),foreground='#717171')
+        Max_dist.grid(row=0,column=2)
+        self.Max_dist_entry = Entry(ECON_para_frame, textvariable=self.econ_seg_max_dist, font=('Times New Roman', 11),
+                                              relief='sunken',bd=1,width=6,state='disabled',justify='center')
+        self.Max_dist_entry.grid(row=0,column=3)
+        
+        
+        # 选择分类算法
+        self.classification_method_selection_label = Label(root, text='选择分类算法：',font=('楷体', 15),
+                                                           padx=10,pady=10)
+        self.classification_method_selection_label.place(x=0, y=300)
+       
+        self.gpu_selection_label = Label(root, text='选择运算设备：', font=('楷体', 15),
+                                         padx=10,pady=10)
+        self.gpu_selection_label.place(x=0, y=360)
         self.classification_method.set("DT")
         DT_btn=Radiobutton(root, text="决策树", variable=self.classification_method, value="DT",
                            cursor='hand2',font=('黑体',12),foreground='#000000')
         DT_btn.bind('<Button-1>',radioSelected1) # Button-1是鼠标左键点击事件
         DT_btn.pack()
-        DT_btn.place(x=190,y=253)
+        DT_btn.place(x=190,y=313)
 
         SVM_btn=Radiobutton(root, text="支持向量机", variable=self.classification_method, value="SVM",
                             cursor='hand2',font=('黑体',12),foreground='#717171')
         SVM_btn.bind('<Button-1>',radioSelected2) 
         SVM_btn.pack()
-        SVM_btn.place(x=290,y=253)
+        SVM_btn.place(x=290,y=313)
 
         RF_btn=Radiobutton(root, text="随机森林", variable=self.classification_method, value="RF",
                            cursor='hand2',font=('黑体',12),foreground='#717171')
         RF_btn.bind('<Button-1>',radioSelected3) 
         RF_btn.pack()
-        RF_btn.place(x=432,y=253)
+        RF_btn.place(x=432,y=313)
 
+        # 设置训练集比例
+        self.train_ratio=StringVar()
+        self.train_ratio.set('0.6')
+        Train_ratio_frame=Frame(root,height=30,width=50,relief='groove',bd=2,padx=5,pady=5)
+        Train_ratio_frame.pack()
+        Train_ratio_frame.place(x=608,y=310)
+        Train_ratio=Label(Train_ratio_frame, text='训练集比例:', font=('黑体',11))
+        Train_ratio.grid(row=0,column=0)
+        self.Train_ratio_entry=Entry(Train_ratio_frame,textvariable=self.train_ratio, font=('Times New Roman', 11), 
+                                              relief='sunken',bd=1,width=6,justify='center')
+        self.Train_ratio_entry.grid(row=0,column=1)
+        
+
+        # 选择运算设备
         self.gpu_selection.set("GPU")
         GPU_btn=Radiobutton(root, text="GPU", variable=self.gpu_selection, value="GPU",
                             cursor='hand2',font=('Times New Roman',13),foreground='#000000')
         GPU_btn.bind('<Button-1>',radioSelected4)
         GPU_btn.pack()
-        GPU_btn.place(x=190,y=310)
+        GPU_btn.place(x=190,y=370)
         CPU_btn=Radiobutton(root, text="CPU", variable=self.gpu_selection, value="CPU",
                             cursor='hand2',font=('Times New Roman',13),foreground='#717171')
         CPU_btn.bind('<Button-1>',radioSelected5)
         CPU_btn.pack()
-        CPU_btn.place(x=290,y=310)
+        CPU_btn.place(x=290,y=370)
+
+        # 显示分类精度
+        self.accuracy_OA = StringVar()
+        self.accuracy_Kappa = StringVar()
+
+        Accuracy_frame=Frame(root,height=10,width=100,relief='groove',bd=2,padx=5,pady=5)
+        Accuracy_frame.pack()
+        Accuracy_frame.place(x=558,y=370)
+        OA=Label(Accuracy_frame, text='OA:', font=('Times New Roman',11))
+        OA.grid(row=0,column=0)
+        self.OA_entry=Entry(Accuracy_frame,textvariable=self.accuracy_OA, font=('Times New Roman', 11), 
+                                              relief='sunken',bd=1,width=6,state='readonly',justify='center')
+        self.OA_entry.grid(row=0,column=1)
+        Kappa=Label(Accuracy_frame, text=' Kappa:', font=('Times New Roman',11))
+        Kappa.grid(row=0,column=2)
+        self.Kappa_entry=Entry(Accuracy_frame,textvariable=self.accuracy_Kappa, font=('Times New Roman', 11), 
+                                              relief='sunken',bd=1,width=6,state='readonly',justify='center')
+        self.Kappa_entry.grid(row=0,column=3)
+
 
         #--------- 软件运算执行的相关组件 ---------#  
         self.segmentation_button = Button(root,text='分割',cursor='hand2',relief='raised',command=self.segmentation,
                                         width=8,bg='#ECECEC',font=('华文彩云',12),activebackground='#D9D9D9')
         self.segmentation_button.pack()
-        self.segmentation_button.place(x=10,y=370)
+        self.segmentation_button.place(x=10,y=430)
 
 
         self.classification_button = Button(root,text='分类',cursor='hand2',relief='raised',command=self.classification,
                                         width=8,bg='#ECECEC',font=('华文彩云',12),activebackground='#D9D9D9')
         self.classification_button.pack()
-        self.classification_button.place(x=150,y=370)
+        self.classification_button.place(x=150,y=430)
 
         # 创建一个退出按钮
         self.quit_button= Button(root,text='退出',cursor='hand2',relief='raised',command=root.destroy,
                                         width=8,bg='#ECECEC',font=('华文彩云',12),activebackground='#D9D9D9')
         self.quit_button.pack()
-        self.quit_button.place(x=430,y=370)
+        self.quit_button.place(x=430,y=430)
 
         # 图片显示按钮
         self.showImage_button= Button(root,text='图片',cursor='hand2',relief='raised',command=self.showImage,
                                         width=8,bg='#ECECEC',font=('华文彩云',12),activebackground='#D9D9D9')
         self.showImage_button.pack()
-        self.showImage_button.place(x=290,y=370)
+        self.showImage_button.place(x=290,y=430)
 
         
+        # bar.pack(padx=10,pady=20)
+        # bar.start()
+        # bar.stop()
+        # BarRoot.destroy()
+
+
     # 缩放图片的尺寸    
     def resizeImage(self,Image_original):
         (w,h)=Image_original.size
@@ -241,45 +315,28 @@ class Application(Frame):
             filename=self.image_path.get()
             if filename=='':
                 messagebox.showinfo('错误','未输入图像文件')
-                self.ImageRoot.destroy
                 return
             MyImage=Image.open(filename)       # 打开图片
             self.Image_btn1['relief']='sunken' # 改变按钮的样式（例如，展示初始图像时，该按钮为“下沉”样式）
             self.Image_btn2['relief']='raised'
-            self.Image_btn3['relief']='raised'
             self.Image_btn4['relief']='raised'
         elif ImageType=='SegmentImage':
             filename=self.segmentation_path.get()
             if filename=='':
                 messagebox.showinfo('错误','无分割结果')
-                self.ImageRoot.destroy
                 return
             MyImage=Image.open(filename)
             self.Image_btn1['relief']='raised'
             self.Image_btn2['relief']='sunken'
-            self.Image_btn3['relief']='raised'
-            self.Image_btn4['relief']='raised'
-        elif ImageType=='SamplesImage':
-            filename=self.samples_path.get()
-            if filename=='':
-                messagebox.showinfo('错误','未输入样本文件')
-                self.ImageRoot.destroy
-                return
-            MyImage=Image.open(filename)
-            self.Image_btn1['relief']='raised'
-            self.Image_btn2['relief']='raised'
-            self.Image_btn3['relief']='sunken'
             self.Image_btn4['relief']='raised'
         elif ImageType=='ClassifyImage':
             filename=self.classification_path.get()
             if filename=='':
                 messagebox.showinfo('错误','无分类结果')
-                self.ImageRoot.destroy
                 return
             MyImage=Image.open(filename)
             self.Image_btn1['relief']='raised'
             self.Image_btn2['relief']='raised'
-            self.Image_btn3['relief']='raised'
             self.Image_btn4['relief']='sunken'
         MyImage_resized=self.resizeImage(MyImage)        # 调整图片的尺寸
         self.MyPhoto=ImageTk.PhotoImage(MyImage_resized) # 图片转为PhotoImage
@@ -305,22 +362,40 @@ class Application(Frame):
                                activebackground='#D9D9D9')
         self.Image_btn2.grid(row=0,column=1)
 
-        self.Image_btn3=Button(Image_btn_frame, text='样本图像', command=lambda:self.selectImage(ImageType='SamplesImage'),
-                               cursor='hand2',relief='raised',width=10,bg='#ECECEC',font=('宋体',12),
-                               activebackground='#D9D9D9')
-        self.Image_btn3.grid(row=0,column=2)
+        # self.Image_btn3=Button(Image_btn_frame, text='样本图像', command=lambda:self.selectImage(ImageType='SamplesImage'),
+        #                        cursor='hand2',relief='raised',width=10,bg='#ECECEC',font=('宋体',12),
+        #                        activebackground='#D9D9D9')
+        # self.Image_btn3.grid(row=0,column=2)
 
         self.Image_btn4=Button(Image_btn_frame, text='分类结果', command=lambda:self.selectImage(ImageType='ClassifyImage'),
                                cursor='hand2',relief='raised',width=10,bg='#ECECEC',font=('宋体',12),
                                activebackground='#D9D9D9')
-        self.Image_btn4.grid(row=0,column=3)
+        self.Image_btn4.grid(row=0,column=2)
 
         # 用Label加载图片
         self.PhotoLabel=Label(ImageRoot)
         self.PhotoLabel.pack(pady=20)
         # self.PhotoLabel.place(y=50)
         ImageRoot.mainloop()
-
+    
+    # 进度条组件
+    # 启动进度条
+    def startProgressbar(self):
+        # 创建一个新窗口用于显示进度条
+        screenwidth = root.winfo_screenwidth()  # 获取显示屏宽度
+        screenheight = root.winfo_screenheight()
+        root_size = '%dx%d+%d+%d' % (350, 150, (screenwidth - 350) / 2, (screenheight - 150) / 2)  # 设置窗口居中参数
+        self.BarRoot=Toplevel(root)
+        self.BarRoot.geometry(root_size)
+        self.BarRoot.title('程序运行中')
+        self.Mybar=ttk.Progressbar(self.BarRoot,length=300,mode='indeterminate',orient='horizontal')
+        self.Mybar.pack(padx=10,pady=50)
+        self.Mybar.start()
+    # 停止进度条并关闭该窗口
+    def stopProgreebar(self):  
+        self.Mybar.stop()
+        self.BarRoot.destroy()
+        
     # 非常简单地完善了以下“分类”和“分割”按钮的报错
     def segmentation(self):
         if self.image_path.get()=='':
@@ -328,11 +403,21 @@ class Application(Frame):
         elif self.segmentation_path.get()=='':
             messagebox.showinfo('错误','未指定输出分割文件')
         else:
-            messagebox.showinfo("分割","开始分割")
-            if self.segmentation_method.get() == "SAM":
-                sam_segmentation(self.image_path.get(), self.segmentation_path.get(), self.gpu_selection.get())
-            elif self.segmentation_method.get() == "ECON":
-                econ_segmentation(self.image_path.get(), self.segmentation_path.get(), self.econ_seg_kernel_size.get(), self.econ_seg_max_dist.get())
+            # 这里加了一个选择ECON算法时的分割参数输入的验证，此处只简单验证了是否为数字
+            if self.segmentation_method.get()=='ECON':
+                if self.Kernel_size_entry.get().isdigit()==False or self.Max_dist_entry.get().isdigit()==False:
+                    messagebox.showerror('错误','分割参数输入错误')
+                    self.Kernel_size_entry.delete(0,'end')
+                    self.Max_dist_entry.delete(0,'end')
+                    return
+            messagebox.showinfo("分割","开始分割")            
+            self.startProgressbar() # 启动进度条
+            # if self.segmentation_method.get() == "SAM":
+            #     sam_segmentation(self.image_path.get(), self.segmentation_path.get(), self.gpu_selection.get())
+            # elif self.segmentation_method.get() == "ECON":
+            #     econ_segmentation(self.image_path.get(), self.segmentation_path.get(), self.econ_seg_kernel_size.get(), self.econ_seg_max_dist.get())
+            # TODO 在调用需要补充进度条停止的条件
+            self.stopProgreebar()   # 停止进度条
             messagebox.showinfo("分割","分割完成")
 
     def classification(self):
@@ -341,10 +426,18 @@ class Application(Frame):
         elif self.classification_path.get()=='':
             messagebox.showinfo('错误','未指定输出分类文件')
         else:
+            # 检查训练集比例是否符合0-1
+            if float(self.Train_ratio_entry.get())<=0.0 or float(self.Train_ratio_entry.get())>=1.0:
+                messagebox.showerror('错误','训练集比例输入错误')
+                self.Train_ratio_entry.delete(0,'end')
+                return
             messagebox.showinfo("分类","开始分类")
-            accuracy = main_classification(self.image_path.get(), self.segmentation_path.get(), self.samples_path.get(), self.classification_path.get(), float(self.train_radio.get()), self.classification_method.get())
-            self.accuracy_OA.set(accuracy["OA"])
-            self.accuracy_Kappa.set(accuracy["kappa"])
+            self.startProgressbar() # 启动进度条
+            # accuracy = main_classification(self.image_path.get(), self.segmentation_path.get(), self.samples_path.get(), self.classification_path.get(), float(self.train_radio.get()), self.classification_method.get())
+            # self.accuracy_OA.set(accuracy["OA"])
+            # self.accuracy_Kappa.set(accuracy["kappa"])
+            # TODO 在调用需要补充进度条停止的条件
+            self.stopProgreebar()   # 停止进度条
             messagebox.showinfo("分类","分类完成")
             
     
@@ -366,14 +459,14 @@ class Application(Frame):
         self.classification_path.set(filename)
 
 root=Tk()
-root.geometry("810x450")
+screenwidth = root.winfo_screenwidth()  # 获取显示屏宽度
+screenheight = root.winfo_screenheight()
+root_size = '%dx%d+%d+%d' % (810, 500, (screenwidth - 810) / 2, (screenheight - 500) / 2)  # 设置窗口居中参数
+root.geometry(root_size)  # 让窗口居中显示
+
 root.title("SAM与多尺度分割卫星图像分割与分类开发版本")
 root.resizable(False, False)
 app = Application(master=root)
-
-# 进度条
-# bar = Progressbar(root, length=200, maximum=100, value=30)
-# bar.pack(padx=10, pady=10)
 
 root.mainloop()
 print(app.image_path.get())
