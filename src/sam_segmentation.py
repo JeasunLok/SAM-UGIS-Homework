@@ -15,5 +15,5 @@ def sam_segmentation(image_path, segmentation_path, str_device):
         device=device,
         sam_kwargs=None,
     )
-
-    sam.generate(image_path, segmentation_path)
+    with torch.no_grad():
+        sam.generate(image_path, segmentation_path)
