@@ -1,9 +1,10 @@
 # SAM application in remote sensing images object-based classification for UGIS course
 The homework of UGIS course: to develop a software (including algorithm and GUI) equipped with SAM to do segmentation and classification for remote sensing images.
 ***
-### Author: [@JeasunLok](https://github.com/JeasunLok) [@PiggieGo](https://github.com/PiggieGo) [@XiaXiaJiang](https://github.com/XiaxiaJiang)
-#### Geography Information Science Grad 2020, School of Geography and Planning, Sun Yat-Sen Univeristy.
+#### Authors: [@JeasunLok](https://github.com/JeasunLok) [@PiggieGo](https://github.com/PiggieGo) [@XiaXiaJiang](https://github.com/XiaxiaJiang)
+#### Geography Information Science Grade 2020, School of Geography and Planning, Sun Yat-Sen Univeristy.
 #### June 14, 2023
+#### Video: [Video of how to use the software in Chinese](https://www.bilibili.com/video/BV19V411T7UD/?vd_source=37637236b9378fa05cf47dbdc81be5df)
 ***
 ## Introduction
 This is a software that can use SAM or multiscale segmentation to sement remote sensing images, then classify the images with input samples based on the segmenation and check the accuracy. 
@@ -54,7 +55,7 @@ The "图片" button can check the original image, segmentation result and classi
 * <b>"分类结果"</b> button shows the classification result.
 ***
 ## Source
-We provide 3 example images and samples in folder <b>images</b> for users to use and test our software and soon the usage video will be provided.
+We provide 3 example images and samples in folder <b>images</b> for users to use and test our software and <b>the video of how to use the software in Chinese is released at [video of how to use the software](https://www.bilibili.com/video/BV19V411T7UD/?vd_source=37637236b9378fa05cf47dbdc81be5df)</b>.
 ***
 ## License
 The software is licensed under the Apache 2.0 license.
