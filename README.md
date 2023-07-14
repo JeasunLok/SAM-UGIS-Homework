@@ -28,7 +28,7 @@ Run the GUI in main to complete your task
 python main.py
 ```
 Download the pth parameters file of sam_vit_b in:
-[Parameters file of sam_vit_b](#https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth)
+[Parameters file of sam_vit_b](https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth)
 Then place it under folder <b>asset</b>.
 ***
 ## How to use it
@@ -61,5 +61,5 @@ The software is licensed under the Apache 2.0 license.
 ***
 ## Acknowledgement
 This software is made possible by the following open source projects. Credit goes to the developers of these projects: 
-[segment-geospatial](#https://github.com/opengeos/segment-geospatial)
-[segment-anything](#https://github.com/facebookresearch/segment-anything)
+[segment-geospatial](https://github.com/opengeos/segment-geospatial)
+[segment-anything](https://github.com/facebookresearch/segment-anything)
