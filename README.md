@@ -39,6 +39,7 @@ Two selections <b>"SAM分割"</b> and <b>""多尺度分割"</b> can be selected.
 <br>
 When doing segmentation, you should select the device GPU or CPU in <b>"选择运算设备"</b>.
 <br>
+
 2. <b>Classification</b>
 After completing the segmentation or you have the segmentation result of original image, you can enter two paths: click <b>"选择路径"</b> for <b>""输入样本文件"</b> and <b>""输出分类文件"</b>，<b>""输入样本文件"</b> is the training and testing samples of the classfier, and the output classification file is <b>""输出分割文件"</b>
 <br>
@@ -46,6 +47,7 @@ Then select the classification algorithm in <b>"选择分类算法"</b>, <b>"决
 <br>
 The train ratio <b>ranged from 0 to 1</b> should be entered in <b>"训练集比例"</b>, and the classification accuracies (i.e. Overall accuracy (OA) and kappa coefficient (Kappa)) are shown in GUI immediately.
 <br>
+
 3. <b>Image visualization</b>
 The "图片" button can check the original image, segmentation result and classification result of the task:
 ![Image](/asset/Image_show.png#pic_center=400x)
