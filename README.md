@@ -1,18 +1,20 @@
-## SAM application in remote sensing images object-based classification for UGIS course
+# SAM application in remote sensing images object-based classification for UGIS course
 The homework of UGIS course: to develop a software (including algorithm and GUI) equipped with SAM to do segmentation and classification for remote sensing images.
 ***
-#### Author: @Jeasun @PiggieGo @吓吓
+### Author: @Jeasun @PiggieGo @吓吓
+#### Geography Information Science Grad 2020, School of Geography and Planning, Sun Yat-Sen Univeristy.
+#### June 14, 2023
 ***
-#### Introduction
+## Introduction
 This is a software that can use SAM or multiscale segmentation to sement remote sensing images, then classify the images with input samples based on the segmenation and check the accuracy. 
 The software is entirely written by Python, and the GUI is written by Python package tkinter.
 ***
-#### Features
+## Features
 * Easy installation and visualized GUI
 * Two segmentation algorithms and three classification algorithms
 * All results can be seen in GUI
 ***
-#### Installation
+## Installation
 Install the requirement
 ```
 git clone https://github.com/JeasunLok/SAM-UGIS-Homework.git && cd SAM-UGIS-Homework
@@ -29,7 +31,7 @@ Download the pth parameters file of sam_vit_b in:
 [Parameters file of sam_vit_b](#https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth)
 Then place it under folder <b>asset</b>.
 ***
-#### How to use it
+## How to use it
 The GUI is shown below:
 ![GUI](/asset/GUI_show.png#pic_center=400x)
 1. <b>Segmentation</b>
@@ -55,13 +57,13 @@ The "图片" button can check the original image, segmentation result and classi
 * <b>"分割结果"</b> button shows the segmentation result.
 * <b>"分类结果"</b> button shows the classification result.
 ***
-#### Source
-We provide 3 example images and samples for users to use and test our software and soon the usage video will be provided.
+## Source
+We provide 3 example images and samples in folder <b>images</b> for users to use and test our software and soon the usage video will be provided.
 ***
-#### License
+## License
 The software is licensed under the Apache 2.0 license.
 ***
-#### Acknowledgement
+## Acknowledgement
 This software is made possible by the following open source projects. Credit goes to the developers of these projects: 
 [segment-geospatial](#https://github.com/opengeos/segment-geospatial)
 [segment-anything](#https://github.com/facebookresearch/segment-anything)
