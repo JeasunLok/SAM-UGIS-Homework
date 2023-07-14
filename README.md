@@ -21,7 +21,7 @@ git clone https://github.com/JeasunLok/SAM-UGIS-Homework.git && cd SAM-UGIS-Home
 conda create -n SAM-UGIS-Homework python=3.9
 conda activate SAM-UGIS-Homework
 pip install -r requirements.txt
-pip install pip install torch==1.13.1+cu117 -f https://download.pytorch.org/whl/torch_stable.html
+pip install torch==1.13.1+cu117 -f https://download.pytorch.org/whl/torch_stable.html
 ```
 Run the GUI in main to complete your task
 ```
