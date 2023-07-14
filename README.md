@@ -1,7 +1,7 @@
 # SAM application in remote sensing images object-based classification for UGIS course
 The homework of UGIS course: to develop a software (including algorithm and GUI) equipped with SAM to do segmentation and classification for remote sensing images.
 ***
-### Author: @Jeasun @PiggieGo @吓吓
+### Author: [@JeasunLok](https://github.com/JeasunLok) [@PiggieGo](https://github.com/PiggieGo) [@XiaXiaJiang](https://github.com/XiaxiaJiang)
 #### Geography Information Science Grad 2020, School of Geography and Planning, Sun Yat-Sen Univeristy.
 #### June 14, 2023
 ***
@@ -61,5 +61,5 @@ The software is licensed under the Apache 2.0 license.
 ***
 ## Acknowledgement
 This software is made possible by the following open source projects. Credit goes to the developers of these projects: 
-[segment-geospatial](https://github.com/opengeos/segment-geospatial)
-[segment-anything](https://github.com/facebookresearch/segment-anything)
+[segment-geospatial](https://github.com/opengeos/segment-geospatial)  
+[segment-anything](https://github.com/facebookresearch/segment-anything)  
