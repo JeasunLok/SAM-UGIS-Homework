@@ -439,7 +439,7 @@ class Application(Frame):
             self.startProgressbar() # 启动进度条
             print(self.classification_method.get()+" segmentation")
             accuracy = main_classification(self.image_path.get(), self.segmentation_path.get(), self.samples_path.get(), self.classification_path.get(), float(self.train_ratio.get()), self.classification_method.get())
-            self.accuracy_OA.set(str(round(accuracy["OA"], 2)))
+            self.accuracy_OA.set(str(round(accuracy["OA"], 4)))
             self.accuracy_Kappa.set(str(round(accuracy["kappa"], 3)))
             self.stopProgreebar()   # 停止进度条
             messagebox.showinfo("分类","分类完成")
