@@ -31,7 +31,7 @@ python main.py
 Download the pth parameters file of sam_vit_b in:
 [Parameters file of sam_vit_b](https://dl.fbaipublicfiles.com/segment_anything/sam_vit_b_01ec64.pth)
 Then place it under folder <b>asset</b>.  
-Or you can modify the code and switch the backbone to sam_vit_l or sam_vit_h.
+Or you can modify the code and switch the backbone to sam_vit_l or sam_vit_h in <b>src/sam_segmentation.py</b>
 ***
 ## How to use it
 The GUI is shown below:
