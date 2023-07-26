@@ -39,7 +39,8 @@ The GUI is shown below:
 1. <b>Segmentation</b>  
 Two file paths are need: click <b>"选择路径"</b> for <b>""输入图像文件"</b> and <b>""输出分割文件"</b>， <b>""输入图像文件"</b> is the original image you want to do segmentation and the output segmentation file is <b>""输出分割文件"</b>, then select the segmentation algorithm in <b>"选择分割算法"</b>. All these files are `tif` file.
 Two selections <b>"SAM分割"</b> and <b>""多尺度分割"</b> can be selected. The former uses SAM to do segmentation and the latter uses quickshift algorithm to do segmentation. When using <b>""多尺度分割"</b>, two parmaters <b>""核大小"</b> and <b>""最大距离"</b> are needed, which represent the scale of the segmentation.
-When doing segmentation, you should select the device GPU or CPU in <b>"选择运算设备"</b>.
+When doing segmentation, you should select the device GPU or CPU in <b>"选择运算设备"</b>.  
+<b>"SAM分割"</b> uses segment-anything model and <b>""多尺度分割"</b> uses quickshift algorithm.
 <br>
 
 2. <b>Classification</b>  
